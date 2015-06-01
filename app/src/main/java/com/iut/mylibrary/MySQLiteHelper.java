@@ -137,13 +137,8 @@ public class MySQLiteHelper extends SQLiteOpenHelper {
      * {@link #getReadableDatabase} is called.
      *
      * @param context to use to open or create the database
-     * @param name    of the database file, or null for an in-memory database
-     * @param factory to use for creating cursor objects, or null for the default
-     * @param version number of the database (starting at 1); if the database is older,
-     *                {@link #onUpgrade} will be used to upgrade the database; if the database is
-     *                newer, {@link #onDowngrade} will be used to downgrade the database
      */
-    public MySQLiteHelper(Context context, String name, SQLiteDatabase.CursorFactory factory, int version) {
+    public MySQLiteHelper(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
     }
 
@@ -156,6 +151,8 @@ public class MySQLiteHelper extends SQLiteOpenHelper {
     @Override
     public void onCreate(SQLiteDatabase db) {
         db.execSQL(DATABASE_CREATE_LIVRE);
+        db.execSQL(DATABASE_CREATE_AUTEUR);
+        db.execSQL(DATABASE_CREATE_LIVRE_ECXRIT_PAR);
     }
 
     /**
@@ -181,6 +178,8 @@ public class MySQLiteHelper extends SQLiteOpenHelper {
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
         db.execSQL("DROP TABLE IF EXISTS " + TABLE_LIVRE);
+        db.execSQL("DROP TABLE IF EXISTS " + TABLE_AUTEUR);
+        db.execSQL("DROP TABLE IF EXISTS " + TABLE_LIVRE_ECRIT_PAR);
     }
 
     /*
@@ -255,7 +254,7 @@ public class MySQLiteHelper extends SQLiteOpenHelper {
         db.insert(TABLE_AUTEUR, null, values);
         db.close();
         db = this.getReadableDatabase();
-        Cursor cur = db.query(TABLE_AUTEUR, COLUMNS_AUTEUR, KEY_ID_AUTEUR, null, null, null, null);
+        Cursor cur = db.query(TABLE_AUTEUR, COLUMNS_AUTEUR, null, null, null, null, null);
         if(cur != null){
             cur.moveToLast();
             try {
@@ -315,37 +314,57 @@ public class MySQLiteHelper extends SQLiteOpenHelper {
     }
 
     public ArrayList<Auteur> getAuteursByLivre(Livre livre){
-        ArrayList<Auteur> auteurs = new ArrayList<Auteur>();
-        SQLiteDatabase db = getWritableDatabase();
+        ArrayList<Auteur> auteurs = new ArrayList<>();
+        SQLiteDatabase db = getReadableDatabase();
+        ArrayList<Integer> ids = new ArrayList<>();
         Cursor cur = db.query(TABLE_LIVRE_ECRIT_PAR, COLUMNS_LIVRE_ECRIT_PAR, KEY_FK_ID_LIVRE_LIVRE_ECRIT_PAR + "=?" , new String[]{String.valueOf(livre.getIdLivre())}, null, null, null);
         if(cur.moveToFirst()){
             do{
-                Auteur auteur = new Auteur();
-                auteur.setIdAuteur(cur.getInt(0));
-                auteur.setNom(cur.getString(1));
-                auteur.setPrenom(cur.getString(2));
-                auteurs.add(auteur);
+                ids.add(cur.getInt(1));
             }while(cur.moveToNext());
         }
         cur.close();
+        for(Integer idAuteur : ids){
+            cur = db.query(TABLE_AUTEUR, COLUMNS_AUTEUR, KEY_ID_AUTEUR + "=?", new String[]{String.valueOf(idAuteur)}, null, null, null);
+            if(cur.moveToFirst()){
+                do{
+                    Auteur auteur = new Auteur();
+                    auteur.setIdAuteur(cur.getInt(0));
+                    auteur.setNom(cur.getString(1));
+                    auteur.setPrenom(cur.getString(2));
+                    auteurs.add(auteur);
+                }while(cur.moveToNext());
+            }
+            cur.close();
+        }
         db.close();
         return auteurs;
     }
 
     public ArrayList<Livre> getLivresByAuteur(Auteur auteur){
         ArrayList<Livre> livres = new ArrayList<Livre>();
+        ArrayList<Integer> ids = new ArrayList<>();
         SQLiteDatabase db = getWritableDatabase();
         Cursor cur = db.query(TABLE_LIVRE_ECRIT_PAR, COLUMNS_LIVRE_ECRIT_PAR, KEY_FK_ID_AUTEUR_LIVRE_ECRIT_PAR + "=?" , new String[]{String.valueOf(auteur.getIdAuteur())}, null, null, null);
         if(cur.moveToFirst()){
             do{
-                Livre livre = new Livre();
-                livre.setIdLivre(cur.getInt(0));
-                livre.setISBN(cur.getString(1));
-                livre.setTitre(cur.getString(2));
-                livres.add(livre);
+                ids.add(cur.getInt(0));
             }while(cur.moveToNext());
         }
         cur.close();
+        for(Integer idLivre : ids) {
+            cur = db.query(TABLE_LIVRE, COLUMNS_LIVRE, KEY_ID_LIVRE+ "=?", new String[]{String.valueOf(idLivre)}, null, null, null);
+            if (cur.moveToFirst()) {
+                do {
+                    Livre livre = new Livre();
+                    livre.setIdLivre(cur.getInt(0));
+                    livre.setISBN(cur.getString(1));
+                    livre.setTitre(cur.getString(2));
+                    livres.add(livre);
+                } while (cur.moveToNext());
+            }
+            cur.close();
+        }
         db.close();
         return livres;
     }
