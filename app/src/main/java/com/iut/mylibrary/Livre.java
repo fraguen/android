@@ -70,4 +70,22 @@ public class Livre {
     public boolean isAuteur(Auteur auteur){
         return this.auteurs.contains(auteur);
     }
+
+    @Override
+    public String toString() {
+        String toString = titre + "\n";
+        if(auteurs.size() > 0) {
+            if (auteurs.size() > 1){
+                toString += auteurs.get(0) + ", " + auteurs.get(1);
+            }
+            else if(auteurs.size() > 2){
+                    toString += ", ... \n";
+            }
+        }
+        else{
+            toString += "Aucun auteur\n";
+        }
+        toString += "ISBN : " + ISBN;
+        return toString;
+    }
 }
