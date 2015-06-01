@@ -50,5 +50,6 @@ public class ScannerActivity extends Activity implements ZXingScannerView.Result
         i.putExtra("url", url);
         i.putExtra("isbn", ISBN);
         startActivity(i);
+        finish();
     }
 }
