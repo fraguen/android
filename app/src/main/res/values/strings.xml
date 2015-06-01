@@ -37,5 +37,6 @@
 
     <string name="toastErrorISBNInvalide">%s n\'est pas un ISBN valide. \nVeuillez saisir un ISBN valide</string>
     <string name="toastErrorNoISBN">Veuillez saisir un ISBN avant de continuer</string>
+    <string name="toastErrorAjoutLivre">Erreur lors l\'ajout du livre à la bibloithèque</string>
 
 </resources>
