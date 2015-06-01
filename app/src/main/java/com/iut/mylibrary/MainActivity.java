@@ -6,14 +6,59 @@ import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.widget.ArrayAdapter;
+import android.widget.ListView;
+import android.widget.TextView;
+
+import java.util.ArrayList;
 
 
 public class MainActivity extends Activity {
 
     @Override
+    protected void onResume() {
+        super.onResume();
+        MySQLiteHelper db = new MySQLiteHelper(getApplicationContext());
+        ArrayList<Livre> livres = db.getAllLivre();
+        int nbLivres = livres.size();
+        String newTitle = getResources().getString(R.string.nbLivreDansBiblio, String.valueOf(nbLivres));
+        TextView text_nbLivre = (TextView) findViewById(R.id.text_nbLivre);
+        text_nbLivre.setText(newTitle);
+        ListView list_livres = (ListView) findViewById(R.id.list_livre);
+        ArrayAdapter<Livre> adapter = new ArrayAdapter(MainActivity.this, R.layout.simple_list, R.id.rowTextView);
+        // S'il y a au moins un contact on l'ajoute à la liste
+        if (!livres.isEmpty()) {
+            for(Livre livre : livres){
+                ArrayList<Auteur> auteurs = db.getAuteursByLivre(livre);
+                livre.setAuteurs(auteurs);
+                adapter.add(livre);
+            }
+        }
+        list_livres.setAdapter(adapter);
+    }
+
+    @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        MySQLiteHelper db = new MySQLiteHelper(getApplicationContext());
+        ArrayList<Livre> livres = db.getAllLivre();
+        int nbLivres = livres.size();
+        String newTitle = getResources().getString(R.string.nbLivreDansBiblio, String.valueOf(nbLivres));
+        TextView text_nbLivre = (TextView) findViewById(R.id.text_nbLivre);
+        text_nbLivre.setText(newTitle);
+        ListView list_livres = (ListView) findViewById(R.id.list_livre);
+        ArrayAdapter<Livre> adapter = new ArrayAdapter(MainActivity.this, R.layout.simple_list, R.id.rowTextView);
+        // S'il y a au moins un contact on l'ajoute à la liste
+        if (!livres.isEmpty()) {
+            for(Livre livre : livres){
+                ArrayList<Auteur> auteurs = db.getAuteursByLivre(livre);
+                livre.setAuteurs(auteurs);
+                adapter.add(livre);
+            }
+        }
+        list_livres.setAdapter(adapter);
+
     }
 
     /**
