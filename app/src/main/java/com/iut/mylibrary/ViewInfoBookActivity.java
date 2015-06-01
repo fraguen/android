@@ -16,15 +16,18 @@ import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import java.io.BufferedInputStream;
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileOutputStream;
-import java.io.InputStream;
-import java.io.OutputStream;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.OutputStreamWriter;
+import java.io.Writer;
 import java.net.URL;
 import java.net.URLConnection;
-import java.util.Date;
-import java.util.Random;
+import java.util.ArrayList;
 
 /**
  * Created by william on 31/05/15.
@@ -36,6 +39,13 @@ public class ViewInfoBookActivity extends Activity{
     public static final int DIALOG_DOWNLOAD_PROGRESS = 0;
 
     private ProgressDialog mProgressDialog;
+
+    private final String AUTEUR = "AU  - ";
+    private final String TITRE = "T1  - ";
+    private File sdcard;
+
+    String encoding = "UTF-8";
+    int BUFFER_SIZE = 8192;
 
     // Progress Dialog
 
@@ -75,25 +85,6 @@ public class ViewInfoBookActivity extends Activity{
         public void onClick(View v) {
             switch (v.getId()){
                 case R.id.btn_addBook:
-                    /*String url = "http://www.worldcat.org/isbn/" + ISBN + "?page=endnote";
-                    Intent i = new Intent(Intent.ACTION_VIEW);
-                    i.setData(Uri.parse(url));
-                    startActivity(i);
-
-                    try {
-                        URL url = new URL("file://www.worldcat.org/isbn/" + ISBN + "?page=endnote");
-                        URLConnection urlConnection = url.openConnection();
-                        InputStream in = new BufferedInputStream(urlConnection.getInputStream());
-                        readStream(in);
-                        in.close();
-                    }
-                    catch (IOException e){
-                        Toast.makeText(
-                                ViewInfoBookActivity.this,
-                                e.getMessage(),
-                                Toast.LENGTH_LONG
-                        ).show();
-                    }*/
                     String url = "http://www.worldcat.org/isbn/" + ISBN + "?page=endnote";
                     new DownloadFileAsync().execute(url);
                     break;
@@ -126,36 +117,45 @@ public class ViewInfoBookActivity extends Activity{
 
         @Override
         protected String doInBackground(String... aurl) {
-            int count;
+            int count = 0;
 
             try {
 
                 URL url = new URL(aurl[0].trim());
                 URLConnection conexion = url.openConnection();
                 conexion.connect();
-
+                sdcard = Environment.getExternalStorageDirectory();
                 int lenghtOfFile = conexion.getContentLength();
                 Log.d("ANDRO_ASYNC", "Lenght of file: " + lenghtOfFile);
 
-                String externalPath = Environment.getExternalStorageDirectory() + "/myLibraryFiles/";
-                InputStream input = new BufferedInputStream(url.openStream());
+                String externalPath = sdcard + "/myLibraryFiles/";
+                InputStreamReader input = new InputStreamReader(url.openStream());
+                encoding = input.getEncoding();
+                BufferedReader in = new BufferedReader(new InputStreamReader(conexion.getInputStream(), encoding));
+                //InputStream input = new BufferedInputStream(url.openStream());
                 // create a File object for the parent directory
                 File myLibraryDirectory = new File(externalPath);
                 // have the object build the directory structure, if needed.
                 myLibraryDirectory.mkdirs();
                 File outputFile = new File(externalPath, ISBN + ".txt");
-                OutputStream output = new FileOutputStream(outputFile);
+                //OutputStream output = new FileOutputStream(outputFile);
+                //FileWriter output = new FileWriter(outputFile);
+                Writer output = new BufferedWriter(new OutputStreamWriter(
+                        new FileOutputStream(outputFile), encoding));
 
-                byte data[] = new byte[1024];
-
+                char data[] = new char[1024];
                 long total = 0;
-
-                while ((count = input.read(data)) != -1) {
+                /*while ((count = input.read(data)) != -1) {
                     total += count;
-                    publishProgress(""+(int)((total*100)/lenghtOfFile));
+                    publishProgress("" + (int) ((total * 100) / lenghtOfFile));
                     output.write(data, 0, count);
+                }*/
+                for (String line; (line = in.readLine()) != null; ){
+                    total += line.length();
+                    publishProgress("" + (int) ((total * 100) / lenghtOfFile));
+                    output.write(line);
+                    output.write("\n");
                 }
-
                 output.flush();
                 output.close();
                 input.close();
@@ -180,6 +180,58 @@ public class ViewInfoBookActivity extends Activity{
             Toast.makeText(
                     ViewInfoBookActivity.this,
                     "Download Finished",
+                    Toast.LENGTH_LONG
+            ).show();
+            createLivre(sdcard + "/myLibraryFiles/" + ISBN + ".txt");
+        }
+    }
+
+    public void createLivre(String path){
+        //Get the text file
+        File file = new File(path);
+        try {
+            Livre livre = new Livre();
+            FileInputStream fis = new FileInputStream(file);
+            BufferedReader br = new BufferedReader(new InputStreamReader(fis, encoding));
+            String line;
+            livre.setISBN(ISBN);
+            ArrayList<Auteur> auteurs = new ArrayList<>();
+
+            while ((line = br.readLine()) != null) {
+                if(line.contains(AUTEUR)){
+                    Auteur auteur = new Auteur();
+                    String auteurRead = line.split(AUTEUR)[1];
+                    String[] split = auteurRead.split(",");
+                    auteur.setNom(split[0]);
+                    try {
+                        auteur.setPrenom(split[1].replace(".", ""));
+                    }catch (Exception e){
+                        auteur.setPrenom("");
+                        Log.d("creationLivre", "Pas de prénom pour l'auteur");
+                    }
+                    auteurs.add(auteur);
+
+                }
+                else if(line.contains(TITRE)){
+                    String titre = line.split(TITRE)[1];
+                    livre.setTitre(titre);
+                }
+            }
+            livre.setAuteurs(auteurs);
+            MySQLiteHelper db = new MySQLiteHelper(getApplicationContext());
+            db.addLivre(livre);
+            for(Auteur auteur : auteurs){
+                db.addAuteur(auteur);
+                db.addAuteurForLivre(auteur, livre);
+            }
+            br.close();
+            finish();
+        }
+        catch (IOException e) {
+            Log.e("CreateLivre", e.getMessage());
+            Toast.makeText(
+                    ViewInfoBookActivity.this,
+                    getResources().getString(R.string.toastErrorAjoutLivre),
                     Toast.LENGTH_LONG
             ).show();
         }
