@@ -202,9 +202,9 @@ public class ViewInfoBookActivity extends Activity{
                     Auteur auteur = new Auteur();
                     String auteurRead = line.split(AUTEUR)[1];
                     String[] split = auteurRead.split(",");
-                    String nomPrenom  = split[0];
+                    String nomPrenom  = split[0].trim();
                     try {
-                        nomPrenom += split[1].replace(".", "");
+                        nomPrenom += " " + split[1].replace(".", "").trim();
                         auteur.setNomPrenom(nomPrenom);
                     }catch (Exception e){
                         Log.d("creationLivre", "Pas de prénom pour l'auteur");
@@ -222,7 +222,12 @@ public class ViewInfoBookActivity extends Activity{
             MySQLiteHelper db = new MySQLiteHelper(getApplicationContext());
             db.addLivre(livre);
             for(Auteur auteur : auteurs){
-                db.addAuteur(auteur);
+                if(db.getAuteurByNomPrenom(auteur.getNomPrenom()).getNomPrenom() != null){
+                    auteur = db.getAuteurByNomPrenom(auteur.getNomPrenom());
+                }
+                else {
+                    db.addAuteur(auteur);
+                }
                 db.addAuteurForLivre(auteur, livre);
             }
             br.close();
