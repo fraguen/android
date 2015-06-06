@@ -1,22 +1,21 @@
 package com.iut.mylibrary;
 
 /**
- * Created by william on 23/05/15.
+ * Created by William Decool (william.decool@gmail.com) and  Alexandre Bouzat (alexandre.bouzat@gmail.com)
  */
+
 
 public class Auteur {
 
     private int idAuteur;
-    private String nom;
-    private String prenom;
+    private String nomPrenom;
 
     public Auteur(){
 
     }
 
-    public Auteur(String nom, String prenom){
-        this.nom = nom;
-        this.prenom = prenom;
+    public Auteur(String nomPrenom){
+        this.nomPrenom = nomPrenom;
     }
 
     public int getIdAuteur() {
@@ -27,24 +26,16 @@ public class Auteur {
         this.idAuteur = idAuteur;
     }
 
-    public String getNom() {
-        return nom;
+    public String getNomPrenom() {
+        return nomPrenom;
     }
 
-    public void setNom(String nom) {
-        this.nom = nom;
-    }
-
-    public String getPrenom() {
-        return prenom;
-    }
-
-    public void setPrenom(String prenom) {
-        this.prenom = prenom;
+    public void setNomPrenom(String nomPrenom) {
+        this.nomPrenom = nomPrenom;
     }
 
     @Override
     public String toString() {
-        return nom + " " + prenom;
+        return nomPrenom;
     }
 }
