@@ -4,6 +4,7 @@
     <string name="hello_world">Hello world!</string>
     <string name="action_settings">Settings</string>
     <string name="text_save">Enregistrer</string>
+    <string name="text_delete">Supprimer</string>
 
     <!--
         MAIN MENU
@@ -58,6 +59,20 @@
 
     <string name="text_infoBook">Info - ISBN : %1$s</string>
 
+
+    <!--
+        Activity Pick Modif Livre
+    -->
+
+    <string name="text_pickModifLivre">Sélectionner un livre à modifier</string>
+
+    <!--
+        Activity Pick Supp Livre
+    -->
+
+    <string name="text_pickSuppLivre">Sélectionner un/des livre(s) à supprimer</string>
+
+
     <!--
         TOAST ERRORS
     -->
@@ -67,5 +82,15 @@
     <string name="toastErrorAjoutLivre">Erreur lors l\'ajout du livre à la bibloithèque</string>
     <string name="toastErrorNoTitreLivre">Veuillez renseinger le titre du livre</string>
     <string name="toastErrorNoISBNLivre">Veuillez renseinger l\'ISBN du livre</string>
+    <string name="toastErrorNoLivreSelected">Aucun livre n\'est séléctionné</string>
+
+
+    <!--
+        Messages d'information
+    -->
+
+        <string name="messageDeleteLivre">
+        La sélection de livre va être supprimée. Continuer?
+    </string>
 
 </resources>
