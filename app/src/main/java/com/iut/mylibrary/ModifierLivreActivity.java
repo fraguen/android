@@ -98,6 +98,9 @@ public class ModifierLivreActivity extends Activity {
                         ).show();
                         break;
                     }
+                    if(nedUpdate){
+                        db.updateLivre(livre);
+                    }
                     if(edit_auteurs.getText() != null) {
                         String auteursString = String.valueOf(edit_auteurs.getText());
                         String[] splitAuteur = auteursString.split(",");
@@ -128,9 +131,7 @@ public class ModifierLivreActivity extends Activity {
                         }
 
                     }
-                    if(nedUpdate){
-                        db.updateLivre(livre);
-                    }
+                    finish();
                     break;
             }
         }
