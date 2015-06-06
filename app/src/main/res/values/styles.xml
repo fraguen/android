@@ -3,6 +3,15 @@
     <!-- Base application theme. -->
     <style name="AppTheme" parent="android:Theme.Black">
         <!-- Customize your theme here. -->
+        <item name="android:editTextStyle">@style/CustomEditText</item>
+    </style>
+
+    <style name="CustomEditText" parent="android:Widget.EditText">
+        <item name="android:layout_width">fill_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_marginRight">15dp</item>
+        <item name="android:layout_marginLeft">15dp</item>
+        <item name="android:layout_marginTop">15dp</item>
     </style>
 
 </resources>
