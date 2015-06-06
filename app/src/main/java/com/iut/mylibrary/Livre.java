@@ -3,7 +3,7 @@ package com.iut.mylibrary;
 import java.util.ArrayList;
 
 /**
- * Created by william on 23/05/15.
+ * Created by William Decool (william.decool@gmail.com) and  Alexandre Bouzat (alexandre.bouzat@gmail.com)
  */
 
 public class Livre {
@@ -75,11 +75,14 @@ public class Livre {
     public String toString() {
         String toString = titre + "\n";
         if(auteurs.size() > 0) {
-            if (auteurs.size() > 1){
-                toString += auteurs.get(0) + ", " + auteurs.get(1);
+            if(auteurs.size() == 1){
+                toString += auteurs.get(0) + "\n";
             }
-            else if(auteurs.size() > 2){
-                    toString += ", ... \n";
+            else if (auteurs.size() == 2){
+                toString += auteurs.get(0) + ", " + auteurs.get(1) + "\n";
+            }
+            else if(auteurs.size() > 2) {
+                toString += auteurs.get(0) + ", " + auteurs.get(1) + ", ... \n";
             }
         }
         else{
