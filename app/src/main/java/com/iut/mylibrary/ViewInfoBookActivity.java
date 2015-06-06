@@ -30,7 +30,7 @@ import java.net.URLConnection;
 import java.util.ArrayList;
 
 /**
- * Created by william on 31/05/15.
+ * Created by William Decool (william.decool@gmail.com) and  Alexandre Bouzat (alexandre.bouzat@gmail.com)
  */
 
 public class ViewInfoBookActivity extends Activity{
@@ -45,7 +45,7 @@ public class ViewInfoBookActivity extends Activity{
     private File sdcard;
 
     String encoding = "UTF-8";
-    int BUFFER_SIZE = 8192;
+
 
     // Progress Dialog
 
@@ -202,12 +202,13 @@ public class ViewInfoBookActivity extends Activity{
                     Auteur auteur = new Auteur();
                     String auteurRead = line.split(AUTEUR)[1];
                     String[] split = auteurRead.split(",");
-                    auteur.setNom(split[0]);
+                    String nomPrenom  = split[0];
                     try {
-                        auteur.setPrenom(split[1].replace(".", ""));
+                        nomPrenom += split[1].replace(".", "");
+                        auteur.setNomPrenom(nomPrenom);
                     }catch (Exception e){
-                        auteur.setPrenom("");
                         Log.d("creationLivre", "Pas de prénom pour l'auteur");
+                        auteur.setNomPrenom(nomPrenom);
                     }
                     auteurs.add(auteur);
 
