@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <TextView
+        android:id="@+id/text_pickModifLivre"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/text_pickModifLivre"
+        android:textAppearance="?android:textAppearanceLarge"
+        android:gravity="center"/>
+
+    <ListView
+        android:id="@+id/list_pickModifLivre"
+        android:layout_below="@id/text_pickModifLivre"
+        android:layout_marginTop="15dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content">
+
+    </ListView>
+
+</RelativeLayout>
