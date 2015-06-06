@@ -38,6 +38,7 @@ public class MainActivity extends Activity {
         text_nbLivre.setText(newTitle);
         ListView list_livres = (ListView) findViewById(R.id.list_livre);
         list_livres.setOnItemClickListener(listOnItemClickListener);
+        list_livres.setOnItemLongClickListener(listOnItemLongClickListener);
 
         RadioButton rb_sortById = (RadioButton) findViewById(R.id.rb_sortById);
         rb_sortById.setOnCheckedChangeListener(rbCheckedChangeListener);
@@ -117,9 +118,13 @@ public class MainActivity extends Activity {
                 return true;
 
             case R.id.action_editBook:
+                i = new Intent(MainActivity.this, PickModifLivre.class);
+                this.startActivity(i);
                 return true;
 
             case R.id.action_deleteBook:
+                i = new Intent(MainActivity.this, PickSuppLivre.class);
+                this.startActivity(i);
                 return true;
 
             case R.id.action_scanBook:
@@ -143,6 +148,17 @@ public class MainActivity extends Activity {
             Intent i = new Intent(MainActivity.this, ModifierLivreActivity.class);
             i.putExtra("idLivre", String.valueOf(livre.getIdLivre()));
             startActivity(i);
+        }
+    };
+
+    AdapterView.OnItemLongClickListener listOnItemLongClickListener = new AdapterView.OnItemLongClickListener() {
+        @Override
+        public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
+            Intent i = new Intent(MainActivity.this, PickSuppLivre.class);
+            int idLivreSelected = ((Livre) parent.getItemAtPosition(position)).getIdLivre();
+            i.putExtra("idLivreSelected", String.valueOf(idLivreSelected));
+            startActivity(i);
+            return true;
         }
     };
 
