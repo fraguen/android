@@ -25,6 +25,10 @@
             <meta-data android:name="android.support.PARENT_ACTIVITY"
                 android:value=".MainActivity" />
         </activity>
+        <activity android:name=".ModifierLivreActivity">
+            <meta-data android:name="android.support.PARENT_ACTIVITY"
+                android:value=".MainActivity"/>
+        </activity>
         <activity android:name=".ScannerActivity">
             <meta-data android:name="android.support.PARENT_ACTIVITY"
                 android:value=".MainActivity" />
@@ -32,6 +36,14 @@
         <activity android:name=".ViewInfoBookActivity">
         <meta-data android:name="android.support.PARENT_ACTIVITY"
             android:value=".AjouterLivreActivity" />
+        </activity>
+        <activity android:name=".PickModifLivre">
+            <meta-data android:name="android.support.PARENT_ACTIVITY"
+                android:value=".MainActivity" />
+        </activity>
+        <activity android:name=".PickSuppLivre">
+            <meta-data android:name="android.support.PARENT_ACTIVITY"
+            android:value=".MainActivity" />
         </activity>
     </application>
 

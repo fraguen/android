@@ -13,12 +13,9 @@
         android:layout_centerHorizontal="true" />
 
     <EditText
+        style="@style/CustomEditText"
         android:id="@+id/edit_ISBNLivre"
-        android:layout_marginLeft="15dp"
-        android:layout_marginRight="15dp"
         android:layout_below="@id/text_addLivre"
-        android:layout_marginTop="25dp"
-        android:layout_width="fill_parent"
         android:hint="@string/text_enterISBN"
         android:gravity="center"
         android:layout_height="wrap_content" />

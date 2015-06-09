@@ -3,12 +3,23 @@
 
     <string name="hello_world">Hello world!</string>
     <string name="action_settings">Settings</string>
+    <string name="text_save">Enregistrer</string>
+    <string name="text_delete">Supprimer</string>
+
+    <!--
+        MAIN MENU
+    -->
+
     <string name="action_exit">Quitter</string>
     <string name="action_addBook">Ajouter</string>
     <string name="action_editBook">Modifier</string>
     <string name="action_deleteBook">Supprimer</string>
     <string name="action_scanBook">Scan</string>
     <string name="action_more">Plus</string>
+
+    <!--
+        Activity Main
+    -->
 
     <string name="sortBooksBy">Tri par :</string>
     <string name="text_triParId">ID</string>
@@ -25,11 +36,39 @@
     <string name="text_enterISBN">Entrer l\'ISBN</string>
     <string name="text_rechercherLivre">Rechercher</string>
 
+
+    <!--
+        Activity Modifier Livre
+    -->
+
+    <string name="text_modifierLivre">Modification du livre</string>
+    <string name="text_titre">Titre</string>
+    <string name="hint_titreLivre">Titre du livre</string>
+    <string name="text_ISBN">ISBN</string>
+    <string name="hint_ISBNLivre">ISBN</string>
+    <string name="text_auteurs">Auteurs</string>
+    <string name="hint_auteur">Prénom Nom (ex: Emile Zola, Molière)</string>
+    <string name="desc_deleteAuteur">Supprime l\'auteur</string>
+
     <!--
         Activity View book info
     -->
 
     <string name="text_infoBook">Info - ISBN : %1$s</string>
+
+
+    <!--
+        Activity Pick Modif Livre
+    -->
+
+    <string name="text_pickModifLivre">Sélectionner un livre à modifier</string>
+
+    <!--
+        Activity Pick Supp Livre
+    -->
+
+    <string name="text_pickSuppLivre">Sélectionner un/des livre(s) à supprimer</string>
+
 
     <!--
         TOAST ERRORS
@@ -38,5 +77,25 @@
     <string name="toastErrorISBNInvalide">%s n\'est pas un ISBN valide. \nVeuillez saisir un ISBN valide</string>
     <string name="toastErrorNoISBN">Veuillez saisir un ISBN avant de continuer</string>
     <string name="toastErrorAjoutLivre">Erreur lors l\'ajout du livre à la bibloithèque</string>
+    <string name="toastErrorNoTitreLivre">Veuillez renseinger le titre du livre</string>
+    <string name="toastErrorNoISBNLivre">Veuillez renseinger l\'ISBN du livre</string>
+    <string name="toastErrorNoLivreSelected">Aucun livre n\'est séléctionné</string>
+
+
+    <!--
+        Messages d'information
+    -->
+
+    <string name="messageDeleteLivre">
+        La sélection de livre va être supprimée. Continuer?
+    </string>
+
+    <!--
+       sCANNER MENU
+   -->
+
+    <string name="action_flash_on">FLASH ON</string>
+    <string name="action_flash_off">FLASH OFF</string>
+
 
 </resources>

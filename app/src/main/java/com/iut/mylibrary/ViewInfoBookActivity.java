@@ -30,7 +30,7 @@ import java.net.URLConnection;
 import java.util.ArrayList;
 
 /**
- * Created by william on 31/05/15.
+ * Created by William Decool (william.decool@gmail.com) and  Alexandre Bouzat (alexandre.bouzat@gmail.com)
  */
 
 public class ViewInfoBookActivity extends Activity{
@@ -44,8 +44,8 @@ public class ViewInfoBookActivity extends Activity{
     private final String TITRE = "T1  - ";
     private File sdcard;
 
-    String encoding = "UTF-8";
-    int BUFFER_SIZE = 8192;
+    private String encoding;
+
 
     // Progress Dialog
 
@@ -122,16 +122,15 @@ public class ViewInfoBookActivity extends Activity{
             try {
 
                 URL url = new URL(aurl[0].trim());
-                URLConnection conexion = url.openConnection();
-                conexion.connect();
+                URLConnection connexion = url.openConnection();
+                connexion.connect();
                 sdcard = Environment.getExternalStorageDirectory();
-                int lenghtOfFile = conexion.getContentLength();
+                int lenghtOfFile = connexion.getContentLength();
                 Log.d("ANDRO_ASYNC", "Lenght of file: " + lenghtOfFile);
-
                 String externalPath = sdcard + "/myLibraryFiles/";
+                encoding = getEncoding(connexion);
                 InputStreamReader input = new InputStreamReader(url.openStream());
-                encoding = input.getEncoding();
-                BufferedReader in = new BufferedReader(new InputStreamReader(conexion.getInputStream(), encoding));
+                BufferedReader in = new BufferedReader(new InputStreamReader(connexion.getInputStream(), encoding));
                 //InputStream input = new BufferedInputStream(url.openStream());
                 // create a File object for the parent directory
                 File myLibraryDirectory = new File(externalPath);
@@ -202,12 +201,13 @@ public class ViewInfoBookActivity extends Activity{
                     Auteur auteur = new Auteur();
                     String auteurRead = line.split(AUTEUR)[1];
                     String[] split = auteurRead.split(",");
-                    auteur.setNom(split[0]);
+                    String nom  = split[0].trim();
                     try {
-                        auteur.setPrenom(split[1].replace(".", ""));
+                        String prenom = split[1].replace(".", "").trim();
+                        auteur.setNomPrenom(prenom + " " + nom);
                     }catch (Exception e){
-                        auteur.setPrenom("");
                         Log.d("creationLivre", "Pas de prénom pour l'auteur");
+                        auteur.setNomPrenom(nom);
                     }
                     auteurs.add(auteur);
 
@@ -221,7 +221,12 @@ public class ViewInfoBookActivity extends Activity{
             MySQLiteHelper db = new MySQLiteHelper(getApplicationContext());
             db.addLivre(livre);
             for(Auteur auteur : auteurs){
-                db.addAuteur(auteur);
+                if(db.getAuteurByNomPrenom(auteur.getNomPrenom()).getNomPrenom() != null){
+                    auteur = db.getAuteurByNomPrenom(auteur.getNomPrenom());
+                }
+                else {
+                    db.addAuteur(auteur);
+                }
                 db.addAuteurForLivre(auteur, livre);
             }
             br.close();
@@ -235,5 +240,20 @@ public class ViewInfoBookActivity extends Activity{
                     Toast.LENGTH_LONG
             ).show();
         }
+    }
+
+    public String getEncoding(URLConnection connection){
+        String contentType = connection.getContentType();
+        String[] values = contentType.split(";"); //The values.length must be equal to 2...
+        String charset = "";
+
+        for (String value : values) {
+            value = value.trim();
+
+            if (value.toLowerCase().startsWith("charset=")) {
+                charset = value.substring("charset=".length());
+            }
+        }
+        return charset;
     }
 }

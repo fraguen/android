@@ -9,7 +9,7 @@ import android.database.sqlite.SQLiteOpenHelper;
 import java.util.ArrayList;
 
 /**
- * Created by william on 23/05/15.
+ * Created by William Decool (william.decool@gmail.com) and  Alexandre Bouzat (alexandre.bouzat@gmail.com)
  */
 
 public class MySQLiteHelper extends SQLiteOpenHelper {
@@ -59,19 +59,16 @@ public class MySQLiteHelper extends SQLiteOpenHelper {
     public static final String TABLE_AUTEUR = "auteur";
 
     public static final String COLUMN_ID_AUTEUR = "idAuteur";
-    public static final String COLUMN_NOM_AUTEUR = "nomAuteur";
-    public static final String COLUMN_PRENOM_AUTEUR = "prenomAuteur";
+    public static final String COLUMN_NOM_PRENOM_AUTEUR = "nomPrenomAuteur";
 
 
     // Books Table Columns names
     public static final String KEY_ID_AUTEUR = COLUMN_ID_AUTEUR;
-    public static final String KEY_NOM_AUTEUR = COLUMN_NOM_AUTEUR;
-    public static final String KEY_PRENOM_AUTEUR = COLUMN_PRENOM_AUTEUR;
+    public static final String KEY_NOM_PRENOM_AUTEUR = COLUMN_NOM_PRENOM_AUTEUR;
 
     private static final String[] COLUMNS_AUTEUR = {
             KEY_ID_AUTEUR,
-            KEY_NOM_AUTEUR,
-            KEY_PRENOM_AUTEUR
+            KEY_NOM_PRENOM_AUTEUR
     };
 
     // Creation de la table auteur
@@ -79,8 +76,7 @@ public class MySQLiteHelper extends SQLiteOpenHelper {
     private static final String DATABASE_CREATE_AUTEUR = "CREATE TABLE IF NOT EXISTS "
             + TABLE_AUTEUR + "("
             + COLUMN_ID_AUTEUR + " INTEGER PRIMARY KEY AUTOINCREMENT, "
-            + COLUMN_NOM_AUTEUR + " TEXT NOT NULL, "
-            + COLUMN_PRENOM_AUTEUR + " TEXT NOT NULL"
+            + COLUMN_NOM_PRENOM_AUTEUR + " TEXT NOT NULL"
             + ");";
 
 
@@ -229,6 +225,22 @@ public class MySQLiteHelper extends SQLiteOpenHelper {
 
     }
 
+    public Livre getLivreById(int idLivre){
+        Livre livre = new Livre();
+        SQLiteDatabase db = getWritableDatabase();
+        Cursor cur = db.query(TABLE_LIVRE, COLUMNS_LIVRE, COLUMN_ID_LIVRE + "=?", new String[]{String.valueOf(idLivre)}, null, null, null);
+        if(cur.moveToFirst()){
+            do{
+                livre.setIdLivre(cur.getInt(0));
+                livre.setISBN(cur.getString(1));
+                livre.setTitre(cur.getString(2));
+            }while(cur.moveToNext());
+        }
+        cur.close();
+        db.close();
+        return livre;
+    }
+
     public void deleteLivre(Livre livre){
         SQLiteDatabase db = this.getWritableDatabase();
 
@@ -241,6 +253,21 @@ public class MySQLiteHelper extends SQLiteOpenHelper {
         db.close();
     }
 
+    public void updateLivre(Livre livre){
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues values = new ContentValues();
+        values.put(KEY_ID_LIVRE, livre.getIdLivre());
+        values.put(KEY_ISBN, livre.getISBN());
+        values.put(KEY_TITIRE, livre.getTitre());
+        db.insert(TABLE_LIVRE, null, values);
+        db.update(
+                TABLE_LIVRE,
+                values,
+                COLUMN_ID_LIVRE +  "=?",
+                new String[]{String.valueOf(livre.getIdLivre())}
+        );
+    }
+
     /*
         METHODES POUR LES AUTEURS
      */
@@ -249,8 +276,7 @@ public class MySQLiteHelper extends SQLiteOpenHelper {
         SQLiteDatabase db = this.getWritableDatabase();
 
         ContentValues values = new ContentValues();
-        values.put(KEY_NOM_AUTEUR, auteur.getNom());
-        values.put(KEY_PRENOM_AUTEUR, auteur.getPrenom());
+        values.put(KEY_NOM_PRENOM_AUTEUR, auteur.getNomPrenom());
         db.insert(TABLE_AUTEUR, null, values);
         db.close();
         db = this.getReadableDatabase();
@@ -276,8 +302,7 @@ public class MySQLiteHelper extends SQLiteOpenHelper {
             do{
                 Auteur auteur = new Auteur();
                 auteur.setIdAuteur(cur.getInt(0));
-                auteur.setNom(cur.getString(1));
-                auteur.setPrenom(cur.getString(2));
+                auteur.setNomPrenom(cur.getString(1));
                 auteurs.add(auteur);
             }while(cur.moveToNext());
         }
@@ -286,14 +311,28 @@ public class MySQLiteHelper extends SQLiteOpenHelper {
         return auteurs;
 
     }
+    public Auteur getAuteurByNomPrenom(String nomPrenom){
+        SQLiteDatabase db = getReadableDatabase();
+        Cursor cur = db.query(TABLE_AUTEUR, COLUMNS_AUTEUR, COLUMN_NOM_PRENOM_AUTEUR + "=?", new String[]{nomPrenom}, null, null, null);
+        Auteur auteur = new Auteur();
+        if(cur.moveToFirst()){
+            do{
+                auteur.setIdAuteur(cur.getInt(0));
+                auteur.setNomPrenom(cur.getString(1));
+            }while(cur.moveToNext());
+        }
+        cur.close();
+        db.close();
+        return auteur;
+    }
+
 
     public void deleteAuteur(Auteur auteur){
         SQLiteDatabase db = this.getWritableDatabase();
 
         db.delete(TABLE_AUTEUR,
                 KEY_ID_AUTEUR + "=" + String.valueOf(auteur.getIdAuteur()) + " AND "
-                        + KEY_NOM_AUTEUR + "=\"" + auteur.getNom() + "\"" + "AND "
-                        + KEY_PRENOM_AUTEUR + "=\"" + auteur.getPrenom() + "\"",
+                        + KEY_NOM_PRENOM_AUTEUR + "=\"" + auteur.getNomPrenom()  + "\"",
                 null
         );
         db.close();
@@ -310,6 +349,24 @@ public class MySQLiteHelper extends SQLiteOpenHelper {
         values.put(KEY_FK_ID_LIVRE_LIVRE_ECRIT_PAR, livre.getIdLivre());
         values.put(KEY_FK_ID_AUTEUR_LIVRE_ECRIT_PAR, auteur.getIdAuteur());
         db.insert(TABLE_LIVRE_ECRIT_PAR, null, values);
+        db.close();
+    }
+
+    public void removeAuteurForLivre(Auteur auteur, Livre livre){
+        SQLiteDatabase db = this.getWritableDatabase();
+
+        ContentValues values = new ContentValues();
+        values.put(KEY_FK_ID_LIVRE_LIVRE_ECRIT_PAR, livre.getIdLivre());
+        values.put(KEY_FK_ID_AUTEUR_LIVRE_ECRIT_PAR, auteur.getIdAuteur());
+        db.delete(TABLE_LIVRE_ECRIT_PAR, COLUMN_FK_ID_AUTEUR_LIVRE_ECRIT_PAR + "=? AND " + COLUMN_FK_ID_AUTEUR_LIVRE_ECRIT_PAR + "=?", new String[]{String.valueOf(auteur.getIdAuteur()), String.valueOf(livre.getIdLivre())});
+        db.close();
+    }
+
+    public void removeAllAuteurForLivre(Livre livre){
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues values = new ContentValues();
+        values.put(KEY_FK_ID_LIVRE_LIVRE_ECRIT_PAR, livre.getIdLivre());
+        db.delete(TABLE_LIVRE_ECRIT_PAR, COLUMN_FK_ID_LIVRE_LIVRE_ECRIT_PAR + "=?", new String[]{String.valueOf(livre.getIdLivre())});
         db.close();
     }
 
@@ -330,8 +387,7 @@ public class MySQLiteHelper extends SQLiteOpenHelper {
                 do{
                     Auteur auteur = new Auteur();
                     auteur.setIdAuteur(cur.getInt(0));
-                    auteur.setNom(cur.getString(1));
-                    auteur.setPrenom(cur.getString(2));
+                    auteur.setNomPrenom(cur.getString(1));
                     auteurs.add(auteur);
                 }while(cur.moveToNext());
             }

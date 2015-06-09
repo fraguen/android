@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <TextView
+        android:id="@+id/text_modifierLivre"
+        android:layout_marginTop="@dimen/activity_horizontal_margin"
+        android:layout_centerHorizontal="true"
+        android:textAppearance="?android:textAppearanceLarge"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/text_modifierLivre"/>
+
+    <TextView
+        android:id="@+id/text_titre"
+        android:layout_below="@id/text_modifierLivre"
+        android:layout_marginTop="25dp"
+        android:text="@string/text_titre"
+        android:layout_width="match_parent"
+        android:layout_marginLeft="15dp"
+        android:textAppearance="?android:textAppearanceLarge"
+        android:layout_height="wrap_content" />
+
+    <EditText
+        style="@style/CustomEditText"
+        android:id="@+id/edit_titreLivre"
+        android:layout_below="@id/text_titre"
+        android:hint="@string/hint_titreLivre" />
+
+    <TextView
+        android:id="@+id/text_ISBN"
+        android:text="@string/text_ISBN"
+        android:layout_marginTop="15dp"
+        android:layout_below="@id/edit_titreLivre"
+        android:textAppearance="?android:textAppearanceLarge"
+        android:layout_marginLeft="15dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+
+    <EditText
+        style="@style/CustomEditText"
+        android:id="@+id/edit_ISBN"
+        android:layout_below="@id/text_ISBN"
+        android:hint="@string/hint_ISBNLivre"
+    />
+
+    <TextView
+        android:id="@+id/text_auteurs"
+        android:text="@string/text_auteurs"
+        android:layout_marginTop="15dp"
+        android:layout_below="@id/edit_ISBN"
+        android:textAppearance="?android:textAppearanceLarge"
+        android:layout_marginLeft="15dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+
+
+    <EditText
+        style="@style/CustomEditText"
+        android:id="@+id/edit_auteurs"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:hint="@string/hint_auteur"
+        android:layout_below="@id/text_auteurs" />
+
+    <Button
+        android:id="@+id/btn_validModifLivre"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:text="@string/text_save"
+        android:width="120dp"
+        />
+
+</RelativeLayout>
