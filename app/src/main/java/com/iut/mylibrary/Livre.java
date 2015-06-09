@@ -12,6 +12,7 @@ public class Livre {
     private String ISBN;
     private String titre;
     private ArrayList<Auteur> auteurs;
+    private boolean selected;
 
     public Livre(){
 
@@ -21,6 +22,7 @@ public class Livre {
         this.ISBN = ISBN;
         this.titre = titre;
         this.auteurs = auteurs;
+        this.selected = false;
     }
 
     public int getIdLivre() {
@@ -69,6 +71,14 @@ public class Livre {
 
     public boolean isAuteur(Auteur auteur){
         return this.auteurs.contains(auteur);
+    }
+
+    public boolean isSelected() {
+        return selected;
+    }
+
+    public void setSelected(boolean selected) {
+        this.selected = selected;
     }
 
     @Override
