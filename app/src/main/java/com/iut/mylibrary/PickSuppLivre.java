@@ -24,15 +24,19 @@ public class PickSuppLivre extends Activity {
     private ListView list_pickSuppLivre;
     private ArrayList<Livre> livresToDelete = new ArrayList<>();
     private int posLivreSelected = -1;
+    private MySQLiteHelper db;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        db = new MySQLiteHelper(getApplicationContext());
         setContentView(R.layout.activity_pick_supp_livre);
         if(getIntent().getExtras() != null){
             posLivreSelected = Integer.parseInt(getIntent().getStringExtra("idLivreSelected"));
+            Livre livreSelected = db.getLivreById(posLivreSelected);
+            livreSelected.setSelected(true);
+            livresToDelete.add(livreSelected);
         }
-        MySQLiteHelper db = new MySQLiteHelper(getApplicationContext());
         ArrayList<Livre>livres = db.getAllLivre();
         list_pickSuppLivre = (ListView) findViewById(R.id.list_pickSuppLivre);
         Button btn_suppLivre = (Button) findViewById(R.id.btn_suppLivre);
@@ -47,24 +51,18 @@ public class PickSuppLivre extends Activity {
                 View cb = row.findViewById(R.id.cb);
                 cb.setOnClickListener(itemClickListener);
                 cb.setTag("cb" + position);
+                Livre livreAtPosition = (Livre)list_pickSuppLivre.getItemAtPosition(position);
                 if(posLivreSelected != -1){
-                    MySQLiteHelper db = new MySQLiteHelper(getApplicationContext());
                     Livre livreSelected = db.getLivreById(posLivreSelected);
-                    Livre livreAtPosition = (Livre)list_pickSuppLivre.getItemAtPosition(position);
-                    if(livresToDelete.size() > 0) {
-                        if (livreAtPosition.getIdLivre() == livreSelected.getIdLivre() && !livresToDelete.contains(livreAtPosition)) {
-                            CheckBox checkBox = (CheckBox)row.findViewWithTag("cb" + position);
-                            checkBox.setChecked(true);
-                            livresToDelete.add((Livre) list_pickSuppLivre.getItemAtPosition(position));
-                        }
-                    }
-                    else{
-                        if (livreAtPosition.getIdLivre() == livreSelected.getIdLivre()) {
-                            CheckBox checkBox = (CheckBox)row.findViewWithTag("cb" + position);
-                            checkBox.setChecked(true);
-                            livresToDelete.add((Livre) list_pickSuppLivre.getItemAtPosition(position));
-                        }
-                    }
+                    if(livreSelected.getIdLivre() == livreAtPosition.getIdLivre())
+                        livreAtPosition.setSelected(true);
+                }
+                if(livreAtPosition.isSelected()){
+                    list_pickSuppLivre.setSelection(position);
+                    ((CheckBox)cb).setChecked(true);
+                }
+                else{
+                    ((CheckBox)cb).setChecked(false);
                 }
                 return row;
             }
@@ -112,14 +110,17 @@ public class PickSuppLivre extends Activity {
                     if(livresToDelete.size() > 0) {
                         if (livresToDelete.contains(livre)) {
                             livresToDelete.remove(livre);
+                            livre.setSelected(false);
                             cb.setChecked(false);
                         } else {
                             livresToDelete.add(livre);
+                            livre.setSelected(true);
                             cb.setChecked(true);
                         }
                     }
                     else{
                         livresToDelete.add(livre);
+                        livre.setSelected(true);
                         cb.setChecked(true);
                     }
                     break;
@@ -131,15 +132,18 @@ public class PickSuppLivre extends Activity {
                     if(livresToDelete.size() > 0) {
                         if (livresToDelete.contains(livre)) {
                             livresToDelete.remove(livre);
+                            livre.setSelected(false);
                             cb.setChecked(false);
                         } else {
                             livresToDelete.add(livre);
                             cb.setChecked(true);
+                            livre.setSelected(true);
                         }
                     }
                     else{
                         livresToDelete.add(livre);
                         cb.setChecked(true);
+                        livre.setSelected(true);
                     }
                     break;
 
