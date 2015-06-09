@@ -18,11 +18,8 @@
     <string name="action_more">Plus</string>
 
     <!--
-        sCANNER MENU
+        Activity Main
     -->
-
-    <string name="action_flash_on">FLASH ON</string>
-    <string name="action_flash_off">FLASH OFF</string>
 
     <string name="sortBooksBy">Tri par :</string>
     <string name="text_triParId">ID</string>
@@ -89,8 +86,16 @@
         Messages d'information
     -->
 
-        <string name="messageDeleteLivre">
+    <string name="messageDeleteLivre">
         La sélection de livre va être supprimée. Continuer?
     </string>
+
+    <!--
+       sCANNER MENU
+   -->
+
+    <string name="action_flash_on">FLASH ON</string>
+    <string name="action_flash_off">FLASH OFF</string>
+
 
 </resources>
